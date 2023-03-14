@@ -92,23 +92,34 @@ contract Nextme is ERC721, Pausable, Ownable, ERC721Burnable {
     receive() external payable {}
 
     /// ========================ONLY OWNER===========================================
+    event ContractURIChanged(address caller, string newURI);
+    event RootChanged(address caller, bytes32 newRoot);
+    event MintPriceChanged(address caller, uint newPrice);
+    event DIDHostChanged(address caller, string newHost);
+    event WithDrawChanged(address caller, address receiver, uint amount);
+
     function setContractURI(string memory contractURI_) external onlyOwner {
         contractURI = contractURI_;
+        emit ContractURIChanged(msg.sender, contractURI_);
     }
 
     function setRoot(bytes32 root_) external onlyOwner {
         root = root_;
+        emit RootChanged(msg.sender, root_);
     }
 
     function setMintPrice(uint mintPrice_) external onlyOwner {
         mintPrice = mintPrice_;
+        emit MintPriceChanged(msg.sender, mintPrice_);
     }
 
     function setDidHost(string memory host_) external onlyOwner {
         didHost = host_;
+        emit DIDHostChanged(msg.sender, host_);
     }
 
     function withdraw(address receiver) external payable onlyOwner {
+        emit WithDrawChanged(msg.sender, receiver, address(this).balance);
         payable(receiver).call{value: address(this).balance}("");
     }
 }
